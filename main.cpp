@@ -41,8 +41,8 @@ struct Quadrilateral
  */
 double length(Quadrilateral& shape, int i1, int i2)
 {
-    double    dx    = abs(shape.p[i1].x - shape.p[i2].x);
-    double    dy    = abs(shape.p[i1].y - shape.p[i2].y);
+    double    dx    = fabs(shape.p[i1].x - shape.p[i2].x);
+    double    dy    = fabs(shape.p[i1].y - shape.p[i2].y);
     return sqrt((double)(dx * dx) + (dy * dy));
 }
 /*
@@ -52,8 +52,8 @@ double length(Quadrilateral& shape, int i1, int i2)
  */
 double findSlope(Quadrilateral& shape, int i1, int i2 )
 {
-    double run =     abs(shape.p[i2].x - shape.p[i1].x);
-    double rise =    abs(shape.p[i1].y - shape.p[i2].y);
+    double run =     std::abs(shape.p[i2].x - shape.p[i1].x);
+    double rise =    std::fabs(shape.p[i1].y - shape.p[i2].y);
     return (double) rise / run;
 }
 /*
@@ -150,8 +150,8 @@ bool checkDiagonalsBisect(Quadrilateral& shape)
 {
     int runAC = shape.p[2].x / 2;
     int riseAC = shape.p[2].y / 2;
-    int runBD = abs(shape.p[1].x - shape.p[3].x) / 2;
-    int riseBD = abs(shape.p[1].y - shape.p[3].y) / 2;
+    int runBD = fabs(shape.p[1].x - shape.p[3].x) / 2;
+    int riseBD = fabs(shape.p[1].y - shape.p[3].y) / 2;
     int coordX1 = shape.p[0].x + runAC;
     int coordY1 = shape.p[0].y + riseAC;
     int coordX2 = shape.p[1].x - runBD;
