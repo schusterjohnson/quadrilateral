@@ -10,3 +10,4 @@ v=$?
 if [ $v -ne 0 ]; then
 echo $v
 fi
+exit $v
