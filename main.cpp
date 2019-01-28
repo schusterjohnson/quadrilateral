@@ -5,7 +5,6 @@
 //  Created by Sarah Schuster-Johnson on 1/15/19.
 //  Copyright © 2019 Sarah Schuster-Johnsobn. All rights reserved.
 //
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -54,7 +53,7 @@ double length(Quadrilateral& shape, int i1, int i2)
 double findSlope(Quadrilateral& shape, int i1, int i2 )
 {
     double run =     abs(shape.p[i2].x - shape.p[i1].x);
-    double rise = abs(shape.p[i1].y - shape.p[i2].y);
+    double rise =    abs(shape.p[i1].y - shape.p[i2].y);
     return (double) rise / run;
 }
 /*
@@ -87,12 +86,10 @@ double angle(Quadrilateral& shape, int i)
     //use atan2 to get  -180 < angle  < 180
     //    if angle < 180, add 380 to get positive rotation angle size
     double temp2    = atan2(si,co) * 180./M_PI;
-    
     if( temp2 < 0.)
     {
         temp2 += 360.;
     }
-    
     return temp2;
 }
 /*
@@ -119,7 +116,7 @@ Quadrilateral saveCoordinates(std::string line, Quadrilateral& shape)
 {
     std::string strWords[line.length()-6];
     int counter = 0;
-    for(int i=0 ; i<line.length() ; i++){
+    for(int i=0 ; i<line.length()-1 ; i++){
         if(line[i] == ' '){
             counter++;
             i++;
@@ -158,22 +155,6 @@ bool checkDiagonalsBisect(Quadrilateral& shape)
     int coordX1 = shape.p[0].x + runAC;
     int coordY1 = shape.p[0].y + riseAC;
     int coordX2 = shape.p[1].x - runBD;
-    int coordY2 = shape.p[1].y + riseBD;
-    return (coordX1 == coordX2 && coordY1 == coordY2);
-}
-/*
- * Checks if diagonal angles intersect at right angle
- * returns true if diagonals intersect at right angle
- */
-bool diagIntersectRightAngles(Quadrilateral& shape)
-{
-    int runAC = shape.p[2].x / 2;
-    int riseAC = shape.p[2].y / 2;
-    int runBD = abs(shape.p[1].x - shape.p[3].x) / 2;
-    int riseBD = abs(shape.p[1].y - shape.p[3].y) / 2;
-    int coordX1 = shape.p[0].x + runAC;
-    int coordY1 = shape.p[0].y + riseAC;
-    int coordX2 = shape.p[1].x- runBD;
     int coordY2 = shape.p[1].y + riseBD;
     return (coordX1 == coordX2 && coordY1 == coordY2);
 }
@@ -275,58 +256,69 @@ bool checkIfRhombi ( Quadrilateral& shape )
  * Identifies which shape it is
  * prints the shape identified
  */
-void checkShape( Quadrilateral& shape)
+std::string checkShape( Quadrilateral& shape)
 {
     if ( checkAllRightAngles(shape) ){
         if ( checkEqualLengths(shape) ){
-            std::cout <<"square"<<std::endl;
-            return;
+            return "square";
         }
-        std::cout <<"rectangle"<<std::endl;
-        return;
+        return "rectangle";
     }
     else
         if ( checkIfParallelogram(shape) ){
             if ( checkIfRhombi(shape) ){
-                std::cout <<"rhombi"<<std::endl;
-                return;
+                return "rhombi";
             }
-            std::cout <<"parallelogram"<<std::endl;
-            return;
+            return "parallelogram";
         }
         else{
             if ( checkIfKite(shape) ){
-                std::cout <<"kite"<<std::endl;
-                return;
+                return "kite";
             }
             if ( checkIfTrapazoid(shape)){
-                std::cout <<"trapazoid"<<std::endl;
-                return;
+                return "trapazoid";
             }
         }
-    std::cout <<"quadrilateral"<<std::endl;
+    return "quadrilateral";
 }
 /*
  * read file containing coordinates to each shape
  * interprests data and prints each shape identified
  */
-void readFile( const std::string filename )
+void readFile( const std::string filename, const std::string solution  )
 {
     std::string          line;
     std::ifstream        infile(filename);
+    std::string          solLine;
+    std::ifstream        inSolFile(solution);
     struct Quadrilateral shape;
     shape.p[0].x = 0;
     shape.p[0].y = 0;
-    int a =       0;
+    int count = 0;
+    std::string  temp [40];
+    for ( std::string solLine; getline( inSolFile, solLine );){
+        temp [count] = solLine;
+        count++;
+    }
+     count = 0;
     for( std::string line; getline( infile, line ); ){
-        
         shape = saveCoordinates(line, shape);
         fillData(shape);
-        checkShape(shape);
+        std::string check = checkShape(shape);
+        if (check != temp [count]){
+          //std::cout<<"wrong"<<std::endl;
+            exit(1);
+        }
+        else{
+          //  std::cout<<check<<std::endl;
+        }
+        count++;
     }
 }
 int main(int argc, const char * argv[])
 {
-    readFile("square2.txt");
+    if (argc > 2){
+   readFile(argv[1], argv[2]);
+    }
     return 0;
 }

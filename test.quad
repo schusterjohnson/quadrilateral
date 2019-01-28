@@ -1,0 +1,12 @@
+#!/bin/bash
+
+./quad quad1.txt sol1.txt
+v=$?
+if [ $v -ne 0 ]; then
+echo $v
+fi
+./quad quad2.txt sol2.txt
+v=$?
+if [ $v -ne 0 ]; then
+echo $v
+fi
