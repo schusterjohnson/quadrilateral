@@ -1,4 +1,4 @@
-sqsduare
+square
 quadrilateral
 trapazoid
 quadrilateral
