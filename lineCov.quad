@@ -1,0 +1,40 @@
+#!/bin/bash
+
+PATH=$PATH:/Library/Developer/CommandLineTools/usr/bin
+
+clang++ -fprofile-instr-generate -fcoverage-mapping main.cpp -o quad
+
+LLVM_PROFILE_FILE="quad1.profraw" ./quad quad1.txt sol1.txt
+
+LLVM_PROFILE_FILE="quad2.profraw" ./quad quad3.txt sol3.txt
+
+LLVM_PROFILE_FILE="quad3.profraw" ./quad quad4.txt sol4.txt
+
+LLVM_PROFILE_FILE="quad4.profraw" ./quad quad5.txt sol5.txt
+
+LLVM_PROFILE_FILE="quad5.profraw" ./quad quad6.txt sol6.txt
+
+LLVM_PROFILE_FILE="quad6.profraw" ./quad quad7.txt sol7.txt
+
+LLVM_PROFILE_FILE="quad7.profraw" ./quad quad8.txt sol8.txt
+
+LLVM_PROFILE_FILE="quad8.profraw" ./quad quad9.txt sol9.txt
+
+LLVM_PROFILE_FILE="quad9.profraw" ./quad quad10.txt sol10.txt
+
+LLVM_PROFILE_FILE="quad10.profraw" ./quad quad11.txt sol11.txt
+
+LLVM_PROFILE_FILE="quad11.profraw" ./quad quad12.txt sol12.txt
+
+LLVM_PROFILE_FILE="quad12.profraw" ./quad quad13.txt sol13.txt
+
+LLVM_PROFILE_FILE="quad13.profraw" ./quad quad14.txt sol14.txt
+
+LLVM_PROFILE_FILE="quad14.profraw" ./quad quad15.txt sol15.txt
+
+
+llvm-profdata merge -sparse quad1.profraw quad2.profraw quad3.profraw quad4.profraw quad5.profraw quad6.profraw quad7.profraw quad8.profraw quad9.profraw quad10.profraw quad11.profraw quad12.profraw  quad13.profraw quad14.profraw -o quad.profdata
+
+llvm-cov show ./quad -instr-profile=quad.profdata
+
+llvm-cov report ./quad -instr-profile=quad.profdata
