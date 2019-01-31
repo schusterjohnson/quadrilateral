@@ -4,7 +4,28 @@
 
 ./quad quad4.txt sol4.txt
 
-./quad quad1.txt sol1.txt
+./quad quad5.txt sol5.txt
+
+./quad quad6.txt sol6.txt
+
+./quad quad7.txt sol7.txt
+
+./quad quad8.txt sol8.txt
+
+./quad quad9.txt sol9.txt
+
+./quad quad10.txt sol10.txt
+
+./quad quad11.txt sol11.txt
+
+./quad quad12.txt sol12.txt
+
+./quad quad13.txt sol13.txt
+
+./quad quad14.txt sol14.txt
+
+./quad quad15.txt sol15.txt
+
 v=$?
 if [ $v -ne 0 ]; then
 echo $v
