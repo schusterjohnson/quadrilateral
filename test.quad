@@ -1,5 +1,9 @@
 #!/bin/bash
 
+./quad quad3.txt sol3.txt
+
+./quad quad4.txt sol4.txt
+
 ./quad quad1.txt sol1.txt
 v=$?
 if [ $v -ne 0 ]; then
