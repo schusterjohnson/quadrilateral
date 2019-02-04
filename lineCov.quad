@@ -2,38 +2,49 @@
 
 PATH=$PATH:/Library/Developer/CommandLineTools/usr/bin
 
+
+#-- create program
+
 clang++ -fprofile-instr-generate -fcoverage-mapping main.cpp -o quad
 
-LLVM_PROFILE_FILE="quad1.profraw" ./quad quad1.txt sol1.txt
+#----- generate random sets , 0 ... 82 inclusive
 
-LLVM_PROFILE_FILE="quad2.profraw" ./quad quad3.txt sol3.txt
+for i in {0..82}
+do
+	./random
 
-LLVM_PROFILE_FILE="quad3.profraw" ./quad quad4.txt sol4.txt
+	#- read file pairs and generate data
+		j=0										#file count number
+		FL=()										#keep output filelist
 
-LLVM_PROFILE_FILE="quad4.profraw" ./quad quad5.txt sol5.txt
+		while read f1 f2
+		do
+			j=$((j + 1))
 
-LLVM_PROFILE_FILE="quad5.profraw" ./quad quad6.txt sol6.txt
+			F_profraw="quad$j.profraw"
+			FL+=($F_profraw)					#add to bash array
 
-LLVM_PROFILE_FILE="quad6.profraw" ./quad quad7.txt sol7.txt
+			LLVM_PROFILE_FILE="$F_profraw" ./quad $f1 $f2
 
-LLVM_PROFILE_FILE="quad7.profraw" ./quad quad8.txt sol8.txt
+		done<<-EFO									#the '-' allow beginning whitespace
+			square.txt			squareSol.txt
+			trapezoid.txt		trapezoidSol.txt
+			rhombus.txt			rhombusSol.txt
+			quadrilateral.txt	quadrilateralSol.txt
+			kite.txt				kiteSol.txt
+			kite2.txt			kiteSol.txt
+			parallelogram.txt	parallelogramSol.txt
+			rectangle.txt		rectangleSol.txt
+			error1.txt error1Sol.txt
+			error2.txt error2Sol.txt
+			error3.txt error3Sol.txt
+			error4.txt error4Sol.txt
+		EFO
 
-LLVM_PROFILE_FILE="quad8.profraw" ./quad quad9.txt sol9.txt
+	#- merge files
+		llvm-profdata merge -sparse "${FL[@]}" -o i$quad.profdata
 
-LLVM_PROFILE_FILE="quad9.profraw" ./quad quad10.txt sol10.txt
-
-LLVM_PROFILE_FILE="quad10.profraw" ./quad quad11.txt sol11.txt
-
-LLVM_PROFILE_FILE="quad11.profraw" ./quad quad12.txt sol12.txt
-
-LLVM_PROFILE_FILE="quad12.profraw" ./quad quad13.txt sol13.txt
-
-LLVM_PROFILE_FILE="quad13.profraw" ./quad quad14.txt sol14.txt
-
-LLVM_PROFILE_FILE="quad14.profraw" ./quad quad15.txt sol15.txt
-
-
-llvm-profdata merge -sparse quad1.profraw quad2.profraw quad3.profraw quad4.profraw quad5.profraw quad6.profraw quad7.profraw quad8.profraw quad9.profraw quad10.profraw quad11.profraw quad12.profraw  quad13.profraw quad14.profraw -o quad.profdata
+done
 
 llvm-cov show ./quad -instr-profile=quad.profdata
 

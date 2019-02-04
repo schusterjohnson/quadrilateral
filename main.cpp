@@ -120,10 +120,6 @@ void fillData(Quadrilateral& shape)
         shape.slope[i1] = findSlope(shape,i1,(i1 + 1) % 4);
     }
 }
-/*
- * Fill Coordinates in shape Struct
- * splits string into coordinates seperated by a space
- */
 
 
 /*
@@ -135,23 +131,6 @@ bool checkOppositeAnglesEqual(Quadrilateral& shape)
     return (shape.angle[0] == shape.angle[2] && shape.angle[1] == shape.angle[3] );
 }
 /*
- * Checks if diagonal angles bisect
- * returns true if diagonals bisect
- */
-bool checkDiagonalsBisect(Quadrilateral& shape)
-{
-    int runAC = shape.p[2].x / 2;
-    int riseAC = shape.p[2].y / 2;
-    int runBD = abs(shape.p[1].x - shape.p[3].x) / 2;
-    int riseBD = abs(shape.p[1].y - shape.p[3].y) / 2;
-    int coordX1 = shape.p[0].x + runAC;
-    int coordY1 = shape.p[0].y + riseAC;
-    int coordX2 = shape.p[1].x - runBD;
-    int coordY2 = shape.p[1].y + riseBD;
-    return (coordX1 == coordX2 && coordY1 == coordY2);
-}
-
-/*
  * Check if opposite sides are equal
  * returns true if opposite sides are equal
  */
@@ -159,38 +138,16 @@ bool checkOppositeSidesEqual(Quadrilateral& shape)
 {
     return (shape.side[0] == shape.side[2] && shape.side[1] == shape.side[3]);
 }
-/*
- * Check if adjacent Angles are Supplementary
- * returns true if adjacent Angles are Supplementary
- */
-bool checkAdjacentAnglesSupp(Quadrilateral& shape)
-{
-    double temp [4];
-    for (int i1 = 0; i1 < 4 ; i1++)
-        temp[i1] = shape.angle[i1] + shape.angle[(i1+1) % 4];
-    double comp = 180;
-    double epsilon = 0.001;
-    if (std::abs(temp[0] - comp) < epsilon){
-        if (std::abs(temp[1] - comp) < epsilon){
-            if (std::abs(temp[2] - comp) < epsilon){
-                if (std::abs(temp[3] - comp) < epsilon){
-                    return true;
-                }
-            }
-        }
-    }
-    return false;
-}
+
 /*
  * Check if lengths are equal
  * returns true if lengths are equal
  */
 bool checkEqualLengths(Quadrilateral& shape )
 {
-    if ( shape.side[0] == shape.side[1] && shape.side[1] == shape.side[2] && shape.side[3] == shape.side[0] ){
-        return true;
-    }
-    return false;
+    return ( (shape.side[0] == shape.side[1]) &&
+            (shape.side[1] == shape.side[2]) &&
+            (shape.side[3] == shape.side[0]) );
 }
 /*
  * Check if ALL angles are right angles
@@ -198,10 +155,7 @@ bool checkEqualLengths(Quadrilateral& shape )
  */
 bool checkAllRightAngles ( Quadrilateral& shape )
 {
-    if (shape.angle[0] == 90 && shape.angle[1] == 90 && shape.angle[2] == 90 && shape.angle[3] == 90){
-        return true;
-    }
-    return false;
+    return (shape.angle[0] == 90 && shape.angle[1] == 90 && shape.angle[2] == 90 && shape.angle[3] == 90);
 }
 /*
  * Check if shape is a parallelogram
@@ -209,7 +163,7 @@ bool checkAllRightAngles ( Quadrilateral& shape )
  */
 bool checkIfParallelogram ( Quadrilateral& shape  )
 {
-    return ( checkAdjacentAnglesSupp(shape) == true && checkDiagonalsBisect(shape) == true && checkOppositeSidesEqual(shape) == true && checkOppositeAnglesEqual(shape) == true );
+    return (   checkOppositeSidesEqual(shape) == true && checkOppositeAnglesEqual(shape) == true );
 }
 /*
  * Check if shape is a kite
@@ -217,11 +171,8 @@ bool checkIfParallelogram ( Quadrilateral& shape  )
  */
 bool checkIfKite ( Quadrilateral& shape )
 {
-    if ( (shape.side[1] == shape.side[2] && shape.side[3] == shape.side[0]) ||
-         (shape.side[2] == shape.side[3] && shape.side[0] == shape.side[1]) ){
-        return true;
-    }
-    return false;
+    return ( (shape.side[1] == shape.side[2] && shape.side[3] == shape.side[0]) ||
+            (shape.side[2] == shape.side[3] && shape.side[0] == shape.side[1]) );
 }
 /*
  * Check if shape is a trapazoid
@@ -234,7 +185,6 @@ bool checkIfTrapazoid ( Quadrilateral& shape )
         (std::abs(shape.slope[1] - shape.slope[3]) < epsilon) ){
         return true;
     }
-    
     return false;
 }
 /*
@@ -252,25 +202,18 @@ bool checkIfRhombi ( Quadrilateral& shape )
 std::string checkShape( Quadrilateral& shape)
 {
     if ( checkAllRightAngles(shape) ){
-        if ( checkEqualLengths(shape) ){
-            return "square";
-        }
+        if ( checkEqualLengths(shape) )     return "square";
         return "rectangle";
     }
     else
         if ( checkIfParallelogram(shape) ){
-            if ( checkIfRhombi(shape) ){
-                return "rhombi";
-            }
+            if ( checkIfRhombi(shape) )     return "rhombus";
             return "parallelogram";
         }
         else{
-            if ( checkIfKite(shape) ){
-                return "kite";
-            }
-            if ( checkIfTrapazoid(shape)){
-                return "trapazoid";
-            }
+            if ( checkIfKite(shape) )       return "kite";
+            if ( checkIfTrapazoid(shape))   return "trapezoid";
+            
         }
     return "quadrilateral";
 }
@@ -282,28 +225,10 @@ void lineValidity(int numValues)
         exit(1);
     }
 }
-void checkCollision(Quadrilateral& shape)
+void checkCollision(Quadrilateral& shape, int i1, int i2)
 {
-    bool check = true;
-    int i = 0;
-    for (int i1 = 1; i1 < 4; i1++){
-        if(( (shape.p[i].x-shape.p[i1].x) == 0)
-           & ((shape.p[i].y - shape.p[i1].y) == 0)){
-            check =false;
-        }
-    }
-    i = 2;
-    for (int i1 = 1; i1 < 4; i1+=2){
-        if( (shape.p[i].x == shape.p[i1].x) &
-           (shape.p[i].y == shape.p[i1].y)){
-            check =false;
-        }
-    }
-    if((shape.p[3].x == shape.p[1].x)
-       &(shape.p[3].y == shape.p[1].y)){
-        check =false;
-    }
-    if (check == false)
+    if( (  (shape.p[i1].x == shape.p[i2].x)
+         &(shape.p[i1].y == shape.p[i2].y)  ) )
     {
         std::cout<<"error 2"<<std::endl;
         exit(1);
@@ -311,19 +236,21 @@ void checkCollision(Quadrilateral& shape)
 }
 void checkIntersection(Quadrilateral& shape)
 {
-    if (checkOppositeSidesEqual(shape) == true)
-    {
-        return;
-    }
+    if (checkOppositeSidesEqual(shape) == true)      return;
     float a = shape.angle[0] + shape.angle[1] + shape.angle[2] + shape.angle[3];
     if ( a > 700) {
         std::cout<<"error 3"<<std::endl;
         exit(1);
     }
 }
+/*
+ * Fill Coordinates in shape Struct
+ * splits string into coordinates seperated by a space
+ */
+
 std::string saveCoordinates( std::string line, Quadrilateral& shape)
 {
-    std::string strWords[line.length()-6];
+    std::string strWords[line.length()];
     int counter = 0;
     for(int i=0 ; i<line.length()-1 ; i++){
         if(line[i] == ' '){
@@ -356,7 +283,11 @@ std::string saveCoordinates( std::string line, Quadrilateral& shape)
         shape.p[i].y = num2;
     }
     fillData(shape);
-    checkCollision(shape) ;
+    for (int i1 = 0; i1 < 4 ; i1++){
+        checkCollision(shape, i1, (i1 + 1) % 4) ;
+        checkCollision(shape, i1, (i1 + 2) % 4) ;
+        checkCollision(shape, i1, (i1 + 3) % 4) ;
+    }
     checkIntersection(shape);
     return checkShape(shape);
 }
@@ -374,21 +305,22 @@ void readFile( const std::string filename, const std::string solution  )
     shape.p[0].x = 0;
     shape.p[0].y = 0;
     int count = 0;
-    std::string  temp [20];
+    std::string  temp [1800];
     for ( std::string solLine; getline( inSolFile, solLine );){
         temp [count] = solLine;
         count++;
     }
     count = 0;
+    int a = 0;
     for( std::string line; getline( infile, line ); ){
         std::string check = saveCoordinates(line, shape);
-        if (check != temp [count]){
-            std::cout<<"wrong"<<std::endl;
+        if (check != temp [count])     {
+            std::cout<<" wrong "<<check <<std::endl; exit(1);
         }
         else{
-            std::cout<<check<<std::endl;
         }
         count++;
+        a++;
     }
 }
 int main(int argc, const char * argv[])
@@ -396,6 +328,6 @@ int main(int argc, const char * argv[])
     if(argc > 2){
         readFile(argv[1], argv[2]);
     }
-    readFile("quad1.txt", "sol1.txt");
+    //readFile("quad1.txt", "sol1.txt");
     return 0;
 }

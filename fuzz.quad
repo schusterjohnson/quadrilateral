@@ -1,0 +1,103 @@
+#!/bin/bash
+
+PATH=$PATH:/Library/Developer/CommandLineTools/usr/bin
+
+
+#-- create program
+
+	clang++ -fprofile-instr-generate -fcoverage-mapping main.cpp -o quad
+
+#----- generate random sets , 0 ... 82 inclusive
+
+F_profdata=			#start empty
+t=0
+count=0
+for i in {0..82}
+do
+	t=$((t + 1))	
+	./random $t
+
+	#- read file pairs and generate data
+		j=0										#file count number
+		FL=()										#keep output filelist
+
+		while read f1 f2
+		do
+			j=$((j + 1))
+
+			F_profraw="quad$j.profraw"
+			FL+=($F_profraw)					#add to bash array
+
+			LLVM_PROFILE_FILE="$F_profraw" ./quad $f1 $f2
+
+		done<<-EFO									#the '-' allow beginning whitespace
+			square.txt			squareSol.txt
+			trapezoid.txt		trapezoidSol.txt
+			rhombus.txt			rhombusSol.txt
+			quadrilateral.txt	quadrilateralSol.txt
+			kite.txt				kiteSol.txt
+			kite2.txt			kiteSol.txt
+			parallelogram.txt	parallelogramSol.txt
+			rectangle.txt		rectangleSol.txt
+			error1.txt error1Sol.txt
+			error1a.txt error1Sol.txt
+			error1b.txt error1Sol.txt
+			error2.txt error2Sol.txt
+			error3.txt error3Sol.txt
+			error4.txt error4Sol.txt
+			wrong.txt wrongSol.txt
+		EFO
+
+	#- merge files - F_profdata is blank, no existing quad.profdata
+		llvm-profdata merge -sparse "${FL[@]}" $F_profdata -o output
+
+		mv output quad.profdata				#rename after creating output
+		F_profdata=quad.profdata			#merge in next run
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad square.txt squareSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad trapezoid.txt trapezoidSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad rhombus.txt rhombusSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad quadrilateral.txt quadrilateralSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad kite.txt kiteSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad kite2.txt kiteSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad parallelogram.txt parallelogramSol.txt
+
+v=$?
+if [[ $? -gt 0 ]]; then ((count++)); fi
+./quad rectangle.txt rectangleSol.txt
+
+
+done
+
+llvm-cov show ./quad -instr-profile=quad.profdata
+
+llvm-cov report ./quad -instr-profile=quad.profdata
+
+llvm-cov export -format=text -instr-profile quad.profdata quad >> coverage.txt
+
+if [ $count -gt 0 ]; then
+echo Error
+fi
+if [ $count -eq 0 ]; then
+echo OK
+fi
