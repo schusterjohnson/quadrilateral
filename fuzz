@@ -45,7 +45,6 @@ do
 			error2.txt error2Sol.txt
 			error3.txt error3Sol.txt
 			error4.txt error4Sol.txt
-			wrong.txt wrongSol.txt
 		EFO
 
 	#- merge files - F_profdata is blank, no existing quad.profdata

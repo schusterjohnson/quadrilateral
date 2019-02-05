@@ -1,0 +1,24 @@
+#!/usr/local/bin/gnuplot
+
+set style line 1 linecolor rgb '#0060ad'     
+set style line 1 linetype 1 linewidth 2     
+set style line 1 pointtype 7 pointsize 1.5
+plot 'squareCorrect0' with linespoints linestyle 1
+pause -1
+plot 'kiteCorrect0' with linespoints linestyle 1
+pause -1
+plot 'trapezoidCorrect0' with linespoints linestyle 1
+pause -1
+plot 'rhombusCorrect0' with linespoints linestyle 1
+pause -1
+plot 'quadrilateralCorrect0' with linespoints linestyle 1
+pause -1
+plot 'kiteCorrect0' with linespoints linestyle 1
+pause -1
+plot 'parallelogramCorrect0' with linespoints linestyle 1
+pause -1
+plot 'rectangleCorrect0' with linespoints linestyle 1
+pause -1
+
+done
+quit

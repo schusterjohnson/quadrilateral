@@ -314,11 +314,29 @@ void readFile( const std::string filename, const std::string solution  )
     int a = 0;
     for( std::string line; getline( infile, line ); ){
         std::string check = saveCoordinates(line, shape);
-        if (check != temp [count])     {
+        assert (check == temp [count]);
+       /* if (check != temp [count])     {
+        *****for drawing shapes in gnuplot*****
+            std::ofstream wrongDataFile;
+            std::string fileData = check+"Expected"+temp [count];
+            wrongDataFile.open (fileData);
+            for (int i =0 ; i < 4 ; i++)
+                wrongDataFile << std::to_string(shape.p[i].x)+" " + std::to_string(shape.p[i].y)<<std::endl;
+            wrongDataFile.close();
             std::cout<<" wrong "<<check <<std::endl; exit(1);
+         ************************
         }
         else{
+        *****for drawing shapes in gnuplot*****
+           std::ofstream correctDataFile;
+            std::string fileData = check+"Correct"+std::to_string(a);
+            correctDataFile.open (fileData);
+            for (int i =0 ; i < 5 ; i++)
+                correctDataFile << std::to_string(shape.p[i%4].x)+" " + std::to_string(shape.p[i%4].y)<<std::endl;
+            correctDataFile.close();
         }
+        ************************/
+        
         count++;
         a++;
     }
