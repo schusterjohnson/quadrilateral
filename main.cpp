@@ -336,7 +336,8 @@ void readFile( const std::string filename, const std::string solution  )
             correctDataFile.close();
         }
         ************************/
-        
+        std::cout<<check <<std::endl;
+
         count++;
         a++;
     }
