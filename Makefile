@@ -4,8 +4,8 @@ quad: main.cpp
 	clang++ main.cpp -o quad
 	clang++ randomGenerator.cpp -o random
 
-fuzz:
-	./fuzz.quad
+fuzzer:
+	./fuzz
 
 test: quad
 	./test.quad
