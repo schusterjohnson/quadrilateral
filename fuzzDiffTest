@@ -1,0 +1,53 @@
+#!/bin/bash
+
+PATH=$PATH:/Library/Developer/CommandLineTools/usr/bin
+	outputFileName="A.txt"
+	diffFileName="Diff.txt"
+
+for i in {0..1}
+do
+	./random $((i + 1))
+
+	#- read file pairs and generate data
+
+		cp /dev/null $diffFileName
+		cp /dev/null $outputFileName
+
+		while read f1 f2
+		do
+			#skip comment and blank lines
+				case "$f1" in
+					\#*|'')	continue;;
+				esac
+
+			#generate my output
+	         ./quad $f1 $f2 >> $outputFileName
+
+			#generate other's output
+				while read coordinates
+				do
+					echo $coordinates | ./diff >> $diffFileName
+				done < $f1
+
+		done<<-EFO									# '-' allow beginning whitespace
+
+			square.txt			squareSol.txt
+			trapezoid.txt		trapezoidSol.txt
+			rhombus.txt			rhombusSol.txt
+			quadrilateral.txt	quadrilateralSol.txt
+			kite.txt				kiteSol.txt
+			parallelogram.txt	parallelogramSol.txt
+			rectangle.txt		rectangleSol.txt
+
+			error1.txt error1Sol.txt
+			error1a.txt error1Sol.txt
+			error1b.txt error1Sol.txt
+			error2.txt error2Sol.txt
+			error3.txt error3Sol.txt
+			error4.txt error4Sol.txtd
+
+		EFO
+
+		diff -y $outputFileName $diffFileName | cat -n | grep -v -e '($'  >  diff.$i
+
+done

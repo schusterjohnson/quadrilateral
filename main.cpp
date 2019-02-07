@@ -86,11 +86,6 @@ double angle(Quadrilateral& shape, int i)
     //dot product used to caclulate cosine of angle subtended by Next,Prev
     // Vnext dot Vprev    = cos(theta) * length(sideNext) * length(sidePrev)
     double co    = (dxn * dxp + dyn * dyp)/(sideNext*sidePrev);
-    if (abs(co) == 1)
-    {
-        std::cout<<"error 4"<<std::endl;
-        exit(1);
-    }
     //cross product used to caclulate cosine of angle subtended by Next,Prev
     // Vnext cross Vprev    = sin(theta) * length(sideNext) * length(sidePrev)
     double si    = (dxn * dyp - dxp * dyn)/(sideNext*sidePrev);
@@ -101,6 +96,12 @@ double angle(Quadrilateral& shape, int i)
     if( temp2 < 0.)
     {
         temp2 += 360.;
+    }
+    double epsilon = 0.001;
+    if (abs(co) == 1 | abs(temp2 - 180) < epsilon)
+    {
+        std::cout<<"error 4"<<std::endl;
+        exit(1);
     }
     return temp2;
 }
@@ -238,8 +239,8 @@ void checkIntersection(Quadrilateral& shape)
 {
     if (checkOppositeSidesEqual(shape) == true)      return;
     float a = shape.angle[0] + shape.angle[1] + shape.angle[2] + shape.angle[3];
-    if ( a > 700) {
-        std::cout<<"error 3"<<std::endl;
+    if ( a > 700 & a < 1000) {
+        std::cout<<a <<" error 3"<<std::endl;
         exit(1);
     }
 }
@@ -305,7 +306,7 @@ void readFile( const std::string filename, const std::string solution  )
     shape.p[0].x = 0;
     shape.p[0].y = 0;
     int count = 0;
-    std::string  temp [1800];
+    std::string  temp [1000];
     for ( std::string solLine; getline( inSolFile, solLine );){
         temp [count] = solLine;
         count++;
@@ -314,30 +315,8 @@ void readFile( const std::string filename, const std::string solution  )
     int a = 0;
     for( std::string line; getline( infile, line ); ){
         std::string check = saveCoordinates(line, shape);
-        assert (check == temp [count]);
-       /* if (check != temp [count])     {
-        *****for drawing shapes in gnuplot*****
-            std::ofstream wrongDataFile;
-            std::string fileData = check+"Expected"+temp [count];
-            wrongDataFile.open (fileData);
-            for (int i =0 ; i < 4 ; i++)
-                wrongDataFile << std::to_string(shape.p[i].x)+" " + std::to_string(shape.p[i].y)<<std::endl;
-            wrongDataFile.close();
-            std::cout<<" wrong "<<check <<std::endl; exit(1);
-         ************************
-        }
-        else{
-        *****for drawing shapes in gnuplot*****
-           std::ofstream correctDataFile;
-            std::string fileData = check+"Correct"+std::to_string(a);
-            correctDataFile.open (fileData);
-            for (int i =0 ; i < 5 ; i++)
-                correctDataFile << std::to_string(shape.p[i%4].x)+" " + std::to_string(shape.p[i%4].y)<<std::endl;
-            correctDataFile.close();
-        }
-        ************************/
+        // assert (check == temp [count]);
         std::cout<<check <<std::endl;
-
         count++;
         a++;
     }
@@ -345,8 +324,8 @@ void readFile( const std::string filename, const std::string solution  )
 int main(int argc, const char * argv[])
 {
     if(argc > 2){
-        readFile(argv[1], argv[2]);
+     readFile(argv[1], argv[2]);
     }
-    //readFile("quad1.txt", "sol1.txt");
+    
     return 0;
 }

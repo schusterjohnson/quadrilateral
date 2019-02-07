@@ -138,10 +138,15 @@ void randomKite1(int num, int seed)
     int i = 0;
     for (  ; i < num ; i ++)
     {
-        int a = rand() % (98 - 3) +3;
+        int a = rand() % (98 - 4) +4;
         if ( a % 2 != 0)         a --;
-        int b = rand() % (a-1) + 1;
+        int b = rand() % (a-3) + 3;
         int c = a - b;
+        if (c == b)
+        {
+            b++;
+            c--;
+        }
         std::string line [11];
         line [0] =  std::to_string(a);
         line [2] =  "0";
@@ -166,6 +171,7 @@ void randomKite2(int num, int seed)
         int b = rand() % (100 -3) + 3;
         int a = rand() % (100 -3) + 3;
         if ( a == b)                                    a -= 1;
+        if ( a / 2 == b)                                 a -= 2;
         std::string line [12];
         line [0] =  std::to_string(a);
         line [2] =  "0";
@@ -397,14 +403,14 @@ int main(int argc, const char * argv[]) {
     if (argc > 1)       a = atoi(argv[1]);
     else                a =80;
     srand (time(NULL));
-    randomSquare(100, a);
-    randomTrapazoid(100, a);
-    randomRhombi(100, a);
-    randomQuadrilateral(100, a);
-    randomKite1(100, a);
-    randomKite2(100, a);
-    randomParalellogram(100, a);
-    randomRectangle(100, a);
+    randomSquare(500, a);
+    randomTrapazoid(500, a);
+    randomRhombi(500, a);
+    randomQuadrilateral(500, a);
+    randomKite1(500, a);
+    randomKite2(500, a);
+    randomParalellogram(500, a);
+    randomRectangle(500, a);
     randomError1(a);
     randomError1a(a);
     randomError1b(a);
